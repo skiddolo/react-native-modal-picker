@@ -1,9 +1,4 @@
-'use strict';
-
-import React,{
-    PropTypes
-} from 'react';
-
+import React from 'react';
 import {
     View,
     StyleSheet,
@@ -20,43 +15,11 @@ import BaseComponent from './BaseComponent';
 
 let componentIndex = 0;
 
-const propTypes = {
-    data: PropTypes.array,
-    onChange: PropTypes.func,
-    initValue: PropTypes.string,
-    style: View.propTypes.style,
-    selectStyle: View.propTypes.style,
-    optionStyle: View.propTypes.style,
-    optionTextStyle: Text.propTypes.style,
-    sectionStyle: View.propTypes.style,
-    sectionTextStyle: Text.propTypes.style,
-    cancelStyle: View.propTypes.style,
-    cancelTextStyle: Text.propTypes.style,
-    overlayStyle: View.propTypes.style,
-    cancelText: PropTypes.string
-};
-
-const defaultProps = {
-    data: [],
-    onChange: ()=> {},
-    initValue: 'Select me!',
-    style: {},
-    selectStyle: {},
-    optionStyle: {},
-    optionTextStyle: {},
-    sectionStyle: {},
-    sectionTextStyle: {},
-    cancelStyle: {},
-    cancelTextStyle: {},
-    overlayStyle: {},
-    cancelText: 'cancel'
-};
-
 export default class ModalPicker extends BaseComponent {
 
-    constructor() {
+    constructor(props) {
 
-        super();
+        super(props);
 
         this._bind(
             'onChange',
@@ -66,10 +29,22 @@ export default class ModalPicker extends BaseComponent {
         );
 
         this.state = {
-            animationType: 'slide',
-            modalVisible: false,
-            transparent: false,
-            selected: 'please select'
+            animationType: this.props.animationType || 'slide',
+            modalVisible: this.props.modalVisible || false,
+            transparent: this.props.transparent || false,
+            selected: this.props.selected || 'please select',
+            data: this.props.data || [],
+            initValue: this.props.initiValue || 'Select me!',
+            style: this.props.style || {},
+            selectStyle: this.props.selectStyle || {},
+            optionStyle: this.props.optionStyle || {},
+            optionTextStyle: this.props.optionTextStyle || {},
+            sectionStyle: this.props.sectionStyle || {},
+            sectionTextStyle: this.props.sectionTextStyle || {},
+            cancelStyle: this.props.cancelStyle || {},
+            cancelTextStyle: this.props.cancelTextStyle || {},
+            overlayStyle: this.props.overlayStyle || {},
+            cancelText: this.props.cancelText || 'cancel'
         };
     }
 
@@ -116,7 +91,7 @@ export default class ModalPicker extends BaseComponent {
                 <View style={[styles.optionStyle, this.props.optionStyle]}>
                     <Text style={[styles.optionTextStyle,this.props.optionTextStyle]}>{option.label}</Text>
                 </View>
-            </TouchableOpacity>)
+            </TouchableOpacity>);
     }
 
     renderOptionList() {
@@ -131,7 +106,7 @@ export default class ModalPicker extends BaseComponent {
         return (
             <View style={[styles.overlayStyle, this.props.overlayStyle]} key={'modalPicker'+(componentIndex++)}>
                 <View style={styles.optionContainer}>
-                    <ScrollView keyboardShouldPersistTaps>
+                    <ScrollView keyboardShouldPersistTaps="always">
                         <View style={{paddingHorizontal:10}}>
                             {options}
                         </View>
@@ -154,7 +129,7 @@ export default class ModalPicker extends BaseComponent {
             return this.props.children;
         }
         return (
-            <View style={[styles.selectStyle, this.props.selectStyle]}>
+            <View key={'child'+componentIndex} style={[styles.selectStyle, this.props.selectStyle]}>
                 <Text style={[styles.selectTextStyle, this.props.selectTextStyle]}>{this.state.selected}</Text>
             </View>
         );
@@ -178,6 +153,3 @@ export default class ModalPicker extends BaseComponent {
         );
     }
 }
-
-ModalPicker.propTypes = propTypes;
-ModalPicker.defaultProps = defaultProps;
