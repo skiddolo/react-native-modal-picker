@@ -32,6 +32,8 @@ export default class ModalPicker extends BaseComponent {
             animationType: this.props.animationType || 'slide',
             modalVisible: this.props.modalVisible || false,
             transparent: this.props.transparent || false,
+            customKey: this.props.customKey || 'modalPicker',
+            disabled: this.props.disabled || false,
             selected: this.props.selected || 'please select',
             data: this.props.data || [],
             initValue: this.props.initiValue || 'Select me!',
@@ -49,11 +51,15 @@ export default class ModalPicker extends BaseComponent {
     }
 
     componentDidMount() {
+        componentIndex += this.state.customKey;
         this.setState({selected: this.props.initValue});
         this.setState({cancelText: this.props.cancelText});
     }
 
     componentWillReceiveProps(nextProps) {
+      if(nextProps.disabled !== undefined){
+          this.setState({disabled: nextProps.disabled});
+      }
       if (nextProps.initValue != this.props.initValue) {
         this.setState({selected: nextProps.initValue});
       }
@@ -72,9 +78,11 @@ export default class ModalPicker extends BaseComponent {
     }
 
     open() {
-      this.setState({
-        modalVisible: true
-      });
+        if (this.state.disabled === false) {
+            this.setState({
+                modalVisible: true
+            });
+        }
     }
 
     renderSection(section) {
@@ -95,14 +103,17 @@ export default class ModalPicker extends BaseComponent {
     }
 
     renderOptionList() {
-        var options = this.props.data.map((item) => {
-            if (item.section) {
-                return this.renderSection(item);
-            } else {
-                return this.renderOption(item);
-            }
-        });
-
+        if ( this.props.data.length ) {
+            var options = this.props.data.map((item) => {
+                if (item.section) {
+                    return this.renderSection(item);
+                } else {
+                    return this.renderOption(item);
+                }
+            });
+        }else{
+            var options = false;
+        }
         return (
             <View style={[styles.overlayStyle, this.props.overlayStyle]} key={'modalPicker'+(componentIndex++)}>
                 <View style={styles.optionContainer}>
