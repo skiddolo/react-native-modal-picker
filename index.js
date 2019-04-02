@@ -107,8 +107,10 @@ export default class ModalPicker extends BaseComponent {
             var options = this.props.data.map((item) => {
                 if (item.section) {
                     return this.renderSection(item);
-                } else {
+                } else if (!item.disabled) {
                     return this.renderOption(item);
+                } else {
+                    return '';
                 }
             });
         }else{
